@@ -5,12 +5,27 @@
 checkOrdering(A, B, Relation) :-
 	Predicate =.. [Relation, A, B],
 	call(Predicate).
-/* Sorting algorithms are as follow */
+/* Sorting algorithms are as follow
+ * Bubble Sort */
 bubbleSort(List, SortedList, Relation) :-
 	swap(List, NewList, Relation), !,
 	bubbleSort(NewList, SortedList, Relation).
 bubbleSort(SortedList, SortedList, _).
 swap([A, B | List], [B, A | List], Relation) :-
-	checkOrdering(A, B, Relation).
+	checkOrdering(B, A, Relation).
 swap([A | List], [A | NewList], Relation) :-
 	swap(List, NewList, Relation).
+/* Quick Sort */
+quickSort([Head | Tail], SortedList, Relation) :-
+	partition(Head, Tail, Left, Right, Relation),
+	quickSort(Left, SortedLeft, Relation),
+	quickSort(Right, SortedRight, Relation),
+	append(SortedLeft, [Head | SortedRight], SortedList).
+quickSort([], [], _).
+partition(Middle, [Head | Tail], [Head | Left], Right, Relation) :-
+	checkOrdering(Head, Middle, Relation), !,
+	partition(Middle, Tail, Left, Right, Relation). 
+partition(Middle, [Head | Tail], Left, [Head | Right], Relation) :-
+	partition(Middle, Tail, Left, Right, Relation). 
+partition(_, [], [], [], _).
+
